@@ -103,23 +103,3 @@ output also contains source references.
 
 - [ ] More to come
 
-## Steps
-
-1. Search for articles and download them. Some can be downloaded from an API, others has to be downloaded from the Chalmers library.
-
-<https://pubmed.ncbi.nlm.nih.gov/download/>
-
-<https://www.ncbi.nlm.nih.gov/books/NBK25501/>
-
-2. Divide the text into its different parts.
-
-- Introduction
-- Methods / Material and methods
-- Results / Results and discussion
-- Discussion
-- Figures
-- Tables
-
-This could be done with a simple regex, or something like that.
-
-
