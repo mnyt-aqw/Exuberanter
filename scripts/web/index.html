@@ -1,0 +1,143 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Litterature Survey Interface</title>
+  <link rel="stylesheet" href="/res/style.css">
+</head>
+
+<body>
+  <section id="sidebar">
+    <h1>Litterature Survey</h1>
+    <ul id="article-list">
+      % for id in articles:
+      <li>
+        <a href="/{{ id }}">{{ id }}</a>
+      </li>
+      % end
+    </ul>
+    <div id="article-navigation">
+      % # Find the index of the current article
+      % current_article_i = None
+      % for i, id in enumerate(articles):
+      % if id == article_id:
+      % current_article_i = i
+      % break
+      % end
+      % end
+      %
+      % previous_article = articles[max(0, current_article_i - 1)]
+      % next_article = articles[min(current_article_i + 1, len(articles) - 1)]
+      <a id="previous-article" class="button-like" href="/{{ previous_article }}">Previous</a>
+      <a id="next-article" class="button-like" href="/{{ next_article }}">Next</a>
+      <a class="button-like" href="/{{ article_id }}/pdf" target="_blank">Read PDF version</a>
+    </div>
+  </section>
+  <main>
+    <section id="inspect-pane">
+      <h2 id="inspect-title"></h2>
+      <p tabindex="0" id="inspect-text-content"></p>
+      <a id="inspect-figure-content" href="" target="_blank" style="display: none">
+        <img src="">
+      </a>
+    </section>
+    <section id="info-pane">
+      <h2 id="information-title"></h2>
+      <p contenteditable tabindex="0" id="information-content"></p>
+      <p id="information-description"></p>
+      <div>
+        <button id="previous-info" onclick="load_identify_info({{ article_id }}, info_index - 1)">Previous</button>
+        <button id="store-info" onclick="store_info({{ article_id }})">Store</button>
+        <button id="next-info" onclick="load_identify_info({{ article_id }}, info_index + 1)">Next</button>
+      </div>
+    </section>
+    <section id="select-pane">
+      <h2>Select</h2>
+      <h3>Sections</h3>
+      <ol id="section-selection">
+        % # Find the children of all sections (article with no parent is in -1)
+        % children = {-1: []}
+        % for i in article['section_order']:
+        % if i not in children:
+        % children[i] = []
+        % end
+        %
+        % section = article['sections'][i]
+        % parent = -1 if section['parent'] is None else section['parent']
+        % if parent in children:
+        % children[parent].append(i)
+        % else:
+        % children[parent] = [i]
+        % end
+        % end
+        %
+        % def recursive_sections(i):
+        % section = article['sections'][i]
+        <li>
+          <button onclick="load_section({{ article_id }}, {{ i }})">Open</button>
+          <span>{{ section['name'] }}</span>
+        </li>
+        % if 0 != len(children[i]):
+        <li>
+          <ol>
+            % for child in children[i]:
+            % recursive_sections(child)
+            % end
+          </ol>
+        </li>
+        % end
+        % end
+        %
+        % for child in children[-1]:
+        % recursive_sections(child)
+        % end
+      </ol>
+      <h3>Figures</h3>
+      <ul id="figure-selection">
+        % for i, figure in enumerate(article['figures']):
+        <li class="figure-item">
+          <img class="preview-img" src="/{{ article_id }}/img/{{ i }}">
+          <button onclick="load_figure({{ article_id }}, {{ i }}, true)">Caption</button>
+          <button onclick="load_figure({{ article_id }}, {{ i }}, false)">Open</button>
+          <span>{{ figure['title'] }}</span>
+        </li>
+        % end
+      </ul>
+      <h3>Tables</h3>
+      <ul id="table-selection">
+        % for i, table in enumerate(article['tables']):
+        <li>
+          <button onclick="load_table({{ article_id }}, {{ i }}, true)">Caption</button>
+          <button onclick="load_table({{ article_id }}, {{ i }}, false)">Open</button>
+          <span>{{ table['title'] }}</span>
+        </li>
+        % end
+      </ul>
+      <h3>Metadata</h3>
+      <ul id="metadata-selection">
+        % for title, metadata in article['metadata'].items():
+        <li>
+          <button onclick="load_metadata({{ article_id }}, '{{ title }}')">Open</button>
+          <span>{{ title}}</span>
+        </li>
+        % end
+      </ul>
+    </section>
+    <section id="summary-pane">
+      <iframe name="form-target" id="form-target" style="display: none;"></iframe>
+      <h2>Summary</h2>
+      <ul id="summary-list">
+      </ul>
+    </section>
+  </main>
+  <script src="/res/interface.js"></script>
+  <script>
+    load_identify_info({{article_id}}, 0);
+    load_info_summary({{article_id}});
+  </script>
+</body>
+
+</html>

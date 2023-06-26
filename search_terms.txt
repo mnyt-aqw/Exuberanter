@@ -1,0 +1,8 @@
+# A file containing the search terms used by search.py
+
+"antibiotic resistance genes" AND (monitoring OR surveillance) AND qPCR
+"antibiotic resistance genes" AND "high throughput"
+"antibiotic resistance" AND (qPCR OR "quantitative PCR")
+"antibiotic resistance" AND q-PCR
+"antibiotic resistance" AND "quantitative polymerase chain reaction"
+"antibiotic resistance" AND "quantitative real-time PCR"
